@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogIn));
             btnLogin = new Button();
             txtPassword = new TextBox();
             txtUserName = new TextBox();
@@ -36,13 +35,14 @@
             lbPassword = new Label();
             label1 = new Label();
             label2 = new Label();
+            dontHaveAnAccountBTN = new Button();
             SuspendLayout();
             // 
             // btnLogin
             // 
             btnLogin.BackColor = Color.White;
             btnLogin.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnLogin.Location = new Point(240, 364);
+            btnLogin.Location = new Point(421, 370);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(206, 63);
             btnLogin.TabIndex = 14;
@@ -114,18 +114,26 @@
             label2.ForeColor = SystemColors.ButtonHighlight;
             label2.Location = new Point(421, 471);
             label2.Name = "label2";
-            label2.Size = new Size(277, 31);
+            label2.Size = new Size(0, 31);
             label2.TabIndex = 16;
-            label2.Text = "Don`t Have An Account";
-            label2.Click += dontHaveAnAccountBTN;
+            // 
+            // dontHaveAnAccountBTN
+            // 
+            dontHaveAnAccountBTN.Location = new Point(158, 370);
+            dontHaveAnAccountBTN.Name = "dontHaveAnAccountBTN";
+            dontHaveAnAccountBTN.Size = new Size(206, 63);
+            dontHaveAnAccountBTN.TabIndex = 17;
+            dontHaveAnAccountBTN.Text = "Don't have an account? Sign Up";
+            dontHaveAnAccountBTN.UseVisualStyleBackColor = true;
+            dontHaveAnAccountBTN.Click += dontHaveAnAccountBTN_Click;
             // 
             // LogIn
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.LightSteelBlue;
-            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackColor = Color.DarkCyan;
             ClientSize = new Size(726, 552);
+            Controls.Add(dontHaveAnAccountBTN);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(btnLogin);
@@ -149,5 +157,6 @@
         private Label lbPassword;
         private Label label1;
         private Label label2;
+        private Button dontHaveAnAccountBTN;
     }
 }

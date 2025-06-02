@@ -4,17 +4,21 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Drawing2D;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Digital_Notes_Manager.Forms
 {
     public partial class NotesListForm : Form
     {
+        private readonly MDIParentForm _mdiParent;
+        private readonly IServiceProvider _serviceProvider;
         private AppDbContext _context;
-        private MDIParentForm _mdiParent;
-        public NotesListForm(MDIParentForm mdiParent)
+
+        public NotesListForm(MDIParentForm mdiParent, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _mdiParent = mdiParent;
+            _serviceProvider = serviceProvider;
             _context = new AppDbContext();
             LoadCategories();
             LoadNotes();
@@ -85,7 +89,7 @@ namespace Digital_Notes_Manager.Forms
                 string category = dgvNotes.Rows[e.RowIndex].Cells["Category"].Value.ToString();
                 DateTime? reminderDate = dgvNotes.Rows[e.RowIndex].Cells["ReminderDate"].Value as DateTime?;
 
-                EditNoteForm editForm = new EditNoteForm(title, content, category, reminderDate);
+                EditNoteForm editForm = new EditNoteForm(title, content, category, reminderDate, _serviceProvider);
                 editForm.Show();
             }
         }
@@ -164,7 +168,7 @@ namespace Digital_Notes_Manager.Forms
         {
             int userID = 1;
             MDIParentForm mdiParent = this.MdiParent as MDIParentForm;
-            CreateNoteForm createNoteForm = new CreateNoteForm(userID, this, mdiParent);
+            CreateNoteForm createNoteForm = new CreateNoteForm(userID, this, mdiParent, _serviceProvider);
             createNoteForm.Show();
             this.Hide();
         }

@@ -3,18 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security;
 
 namespace Digital_Notes_Manager.Utilities
 {
-    using System;
-    using System.Security;
-
     public static class SessionManager
     {
         public static string UserName { get; set; }
         private static SecureString _password = new SecureString();
-
-        
 
         public static void SetPassword(string password)
         {
@@ -36,6 +32,11 @@ namespace Digital_Notes_Manager.Utilities
             UserName = string.Empty;
             _password.Dispose();
             _password = new SecureString();
+        }
+
+        public static bool IsLoggedIn()
+        {
+            return !string.IsNullOrEmpty(UserName) && _password.Length > 0;
         }
     }
 }

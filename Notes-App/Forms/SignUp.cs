@@ -9,17 +9,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FR_Project.Presentation
 {
     public partial class SignUp : Form
     {
-        AuthServices _authServices;
-        public SignUp(AuthServices  authServices)
+        private readonly AuthServices _authServices;
+        private readonly IServiceProvider _serviceProvider;
+
+        public SignUp(AuthServices authServices, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _authServices = authServices;
-            
+            _serviceProvider = serviceProvider;
         }
 
         private void SignUpbt_Click(object sender, EventArgs e)
@@ -27,54 +30,40 @@ namespace FR_Project.Presentation
             string? userName = UserNametxt.Text;
             string? password = Passwordtxt.Text;
             if (userName != null && userName.Trim() != ""
-                && password != null && password.Trim() != null)
+                && password != null && password.Trim() != "")
             {
                 try
                 {
                     _authServices.CreateUser(userName, password);
+                    MessageBox.Show("Registration successful! Please login.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
+                    // Redirect to login page
+                    var loginForm = _serviceProvider.GetRequiredService<LogIn>();
+                    loginForm.Show();
+                    this.Hide();
                 }
                 catch (InvalidUserExists ex)
                 {
-                    MessageBox.Show(ex.Message);
-
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception ex) 
                 {
-                    MessageBox.Show("Error !");
+                    MessageBox.Show("An error occurred during registration.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
             }
             else
             {
-                MessageBox.Show("User Name Or password is Empty");
+                MessageBox.Show("Username and password cannot be empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
-            /*if (userOperation.EmaiAlreadyExists(Emailtxt.Text))
-            {
-                MessageBox.Show("This email already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-
-            }
-            if (!userOperation.ValaidEmail(Emailtxt.Text))
-            {
-                MessageBox.Show("Please enter invalaid email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            var user = userOperation.CreateNewUser(UserNametxt.Text, Emailtxt.Text, Passwordtxt.Text);
-            if (user == null)
-            {
-                MessageBox.Show("Please Try again To Sign Up", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                MessageBox.Show("Sign Up Successful ", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LogIn logIn = new LogIn();
-                logIn.Show();
-                this.Hide();
-            }
-*/
-
         }
+
+        private void BackToLogin_Click(object sender, EventArgs e)
+        {
+            var loginForm = _serviceProvider.GetRequiredService<LogIn>();
+            loginForm.Show();
+            this.Hide();
+        }
+
         private void SetRoundedButton(Button button, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -89,7 +78,6 @@ namespace FR_Project.Presentation
 
         private void SignUp_Load(object sender, EventArgs e)
         {
-
             SetRoundedButton(SignUpbt, 26);
         }
     }

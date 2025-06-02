@@ -101,7 +101,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackColor = Color.DarkCyan;
             ClientSize = new Size(1185, 587);
             Controls.Add(LogInbt);
             Controls.Add(label2);

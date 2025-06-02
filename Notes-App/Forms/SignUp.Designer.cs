@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SignUp));
             label1 = new Label();
             label3 = new Label();
             UserNametxt = new TextBox();
@@ -104,8 +103,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.LightSteelBlue;
-            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackColor = Color.DarkCyan;
             ClientSize = new Size(914, 677);
             Controls.Add(label2);
             Controls.Add(SignUpbt);

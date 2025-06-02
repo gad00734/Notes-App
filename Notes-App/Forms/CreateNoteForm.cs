@@ -1,25 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Extensions.DependencyInjection;
 using FR_Project.Presentation;
 
 namespace Digital_Notes_Manager.Forms
 {
     public partial class CreateNoteForm : Form
     {
-        private int _userID;
-        private NotesListForm _parentForm;
+        private readonly int _userId;
+        private readonly NotesListForm _notesListForm;
+        private readonly MDIParentForm _mdiParent;
+        private readonly IServiceProvider _serviceProvider;
         CategorySelector categorySelector = new CategorySelector();
-        private MDIParentForm _mdiParentForm;
-        public CreateNoteForm(int userID, NotesListForm parentForm, MDIParentForm mdiParentForm)
+
+        public CreateNoteForm(int userId, NotesListForm notesListForm, MDIParentForm mdiParent, IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            _userID = userID;
-            _parentForm = parentForm;
-            _mdiParentForm = mdiParentForm;
+            _userId = userId;
+            _notesListForm = notesListForm;
+            _mdiParent = mdiParent;
+            _serviceProvider = serviceProvider;
             this.Load += CreateNoteForm_Load;
         }
 
@@ -63,10 +71,8 @@ namespace Digital_Notes_Manager.Forms
         private void CategorySelector_CategoryChanged(object sender, EventArgs e)
         {
             // 🔹 تحديث `MDIParentForm` عند تغيير التصنيف
-            _mdiParentForm.UpdateCategoryLabel(categorySelector.SelectedCategory);
+            _mdiParent.UpdateCategoryLabel(categorySelector.SelectedCategory);
         }
-
-
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -84,7 +90,7 @@ namespace Digital_Notes_Manager.Forms
                     Content = txtContent.Text,
                     Category = categorySelector.SelectedCategory,
                     ReminderDate = dtpReminder.Checked ? dtpReminder.Value : (DateTime?)null,
-                    UserID = _userID
+                    UserID = _userId
                 };
 
                 context.Notes.Add(newNote);
@@ -97,7 +103,7 @@ namespace Digital_Notes_Manager.Forms
                 parentForm.UpdateCategoryLabel(categorySelector.SelectedCategory);
             }
             // تحديث قائمة الملاحظات بعد الحفظ
-            _parentForm.LoadNotes();
+            _notesListForm.LoadNotes();
 
             // تفريغ الحقول
             txtTitle.Clear();
@@ -109,8 +115,8 @@ namespace Digital_Notes_Manager.Forms
 
         private void btnBackToNotes_Click(object sender, EventArgs e)
         {
-            _parentForm.Show();
-            _parentForm.LoadNotes(); // تحديث القائمة
+            _notesListForm.Show();
+            _notesListForm.LoadNotes(); // تحديث القائمة
             this.Close();
         }
 
@@ -118,8 +124,6 @@ namespace Digital_Notes_Manager.Forms
         {
             this.Close();
         }
-
-
 
         private void SetRoundedButton(Button button, int radius)
         {
@@ -135,7 +139,7 @@ namespace Digital_Notes_Manager.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MDIParentForm form = new MDIParentForm(_userID);
+            MDIParentForm form = new MDIParentForm(_userId, _serviceProvider);
             form.ShowDialog();
             this.Hide();
         }

@@ -8,20 +8,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using Digital_Notes_Manager.Utilities;
+using Microsoft.Extensions.DependencyInjection;
+using FR_Project.Presentation;
+
 namespace Digital_Notes_Manager.Forms
 {
     public partial class MDIParentForm : Form
     {
+        private readonly IServiceProvider _serviceProvider;
         private int _userID;
         private NotesListForm notesListForm;
 
         // CategorySelector categorySelector = new CategorySelector();
 
-        public MDIParentForm(int userID)
+        public MDIParentForm(int userId, IServiceProvider serviceProvider)
         {
-            _userID = userID;
+            _userID = userId;
+            _serviceProvider = serviceProvider;
             InitializeComponent();
-
         }
 
         private void NewFileToolItem_Click(object sender, EventArgs e)
@@ -150,12 +155,11 @@ namespace Digital_Notes_Manager.Forms
 
         private void MDIParentForm_Load(object sender, EventArgs e)
         {
-
             panel1.Controls.Clear();
             panel1.Controls.Add(label1);
             panel1.Controls.Add(button1);
 
-            notesListForm = new NotesListForm(this);
+            notesListForm = new NotesListForm(this, _serviceProvider);
 
             //  categorySelector.CategoryChanged += UpdateCategoryLabel;
         }
@@ -167,9 +171,29 @@ namespace Digital_Notes_Manager.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
-            CreateNoteForm createNoteForm = new CreateNoteForm(_userID, notesListForm, this);
+            CreateNoteForm createNoteForm = new CreateNoteForm(_userID, notesListForm, this, _serviceProvider);
             createNoteForm.Show();
+        }
+
+        private void LogoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Clear session
+            SessionManager.ClearSession();
+
+            // Show login form
+            var loginForm = _serviceProvider.GetRequiredService<LogIn>();
+            loginForm.Show();
+            this.Close();
+        }
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void dataGridViewNotes_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

@@ -158,7 +158,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(0, 0, 64);
+            BackColor = SystemColors.WindowFrame;
             ClientSize = new Size(813, 600);
             Controls.Add(btnSaveFile);
             Controls.Add(btnOpenFile);

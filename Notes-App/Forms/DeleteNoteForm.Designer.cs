@@ -72,7 +72,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(0, 0, 64);
+            BackColor = Color.DarkCyan;
             ClientSize = new Size(480, 475);
             Controls.Add(btnCancel);
             Controls.Add(btnConfirmDelete);

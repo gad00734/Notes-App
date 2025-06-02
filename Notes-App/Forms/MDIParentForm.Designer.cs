@@ -35,7 +35,8 @@
             toolStripComboBox1 = new ToolStripComboBox();
             OpenFileToolItem = new ToolStripMenuItem();
             SaveFileToolItem = new ToolStripMenuItem();
-            ExitFileToolItem = new ToolStripMenuItem();
+            logoutToolStripMenuItem = new ToolStripMenuItem();
+            exitToolStripMenuItem = new ToolStripMenuItem();
             editToolStripMenuItem = new ToolStripMenuItem();
             CutTextToolItem = new ToolStripMenuItem();
             CopyTextToolItem = new ToolStripMenuItem();
@@ -49,8 +50,8 @@
             aboutToolStripMenuItem = new ToolStripMenuItem();
             dataGridViewNotes = new DataGridView();
             panel1 = new Panel();
-            label1 = new Label();
             button1 = new Button();
+            label1 = new Label();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewNotes).BeginInit();
             panel1.SuspendLayout();
@@ -69,7 +70,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { NewFileToolItem, OpenFileToolItem, SaveFileToolItem, ExitFileToolItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { NewFileToolItem, OpenFileToolItem, SaveFileToolItem, logoutToolStripMenuItem, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(46, 24);
             fileToolStripMenuItem.Text = "File";
@@ -78,7 +79,7 @@
             // 
             NewFileToolItem.DropDownItems.AddRange(new ToolStripItem[] { toolStripTextBox1, toolStripComboBox1 });
             NewFileToolItem.Name = "NewFileToolItem";
-            NewFileToolItem.Size = new Size(224, 26);
+            NewFileToolItem.Size = new Size(139, 26);
             NewFileToolItem.Text = "New";
             NewFileToolItem.Click += NewFileToolItem_Click;
             // 
@@ -95,23 +96,30 @@
             // OpenFileToolItem
             // 
             OpenFileToolItem.Name = "OpenFileToolItem";
-            OpenFileToolItem.Size = new Size(224, 26);
+            OpenFileToolItem.Size = new Size(139, 26);
             OpenFileToolItem.Text = "Open";
             OpenFileToolItem.Click += OpenFileToolItem_Click;
             // 
             // SaveFileToolItem
             // 
             SaveFileToolItem.Name = "SaveFileToolItem";
-            SaveFileToolItem.Size = new Size(224, 26);
+            SaveFileToolItem.Size = new Size(139, 26);
             SaveFileToolItem.Text = "Save";
             SaveFileToolItem.Click += SaveFileToolItem_Click;
             // 
-            // ExitFileToolItem
+            // logoutToolStripMenuItem
             // 
-            ExitFileToolItem.Name = "ExitFileToolItem";
-            ExitFileToolItem.Size = new Size(224, 26);
-            ExitFileToolItem.Text = "Exit";
-            ExitFileToolItem.Click += ExitFileToolItem_Click;
+            logoutToolStripMenuItem.Name = "logoutToolStripMenuItem";
+            logoutToolStripMenuItem.Size = new Size(139, 26);
+            logoutToolStripMenuItem.Text = "Logout";
+            logoutToolStripMenuItem.Click += LogoutToolStripMenuItem_Click;
+            // 
+            // exitToolStripMenuItem
+            // 
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new Size(139, 26);
+            exitToolStripMenuItem.Text = "Exit";
+            exitToolStripMenuItem.Click += ExitToolStripMenuItem_Click;
             // 
             // editToolStripMenuItem
             // 
@@ -123,21 +131,21 @@
             // CutTextToolItem
             // 
             CutTextToolItem.Name = "CutTextToolItem";
-            CutTextToolItem.Size = new Size(224, 26);
+            CutTextToolItem.Size = new Size(126, 26);
             CutTextToolItem.Text = "Cut";
             CutTextToolItem.Click += CutTextToolItem_Click;
             // 
             // CopyTextToolItem
             // 
             CopyTextToolItem.Name = "CopyTextToolItem";
-            CopyTextToolItem.Size = new Size(224, 26);
+            CopyTextToolItem.Size = new Size(126, 26);
             CopyTextToolItem.Text = "Copy";
             CopyTextToolItem.Click += CopyTextToolItem_Click;
             // 
             // PasteTextToolItem
             // 
             PasteTextToolItem.Name = "PasteTextToolItem";
-            PasteTextToolItem.Size = new Size(224, 26);
+            PasteTextToolItem.Size = new Size(126, 26);
             PasteTextToolItem.Text = "Paste";
             PasteTextToolItem.Click += PasteTextToolItem_Click;
             // 
@@ -151,7 +159,7 @@
             // toggleToolStripMenuItem
             // 
             toggleToolStripMenuItem.Name = "toggleToolStripMenuItem";
-            toggleToolStripMenuItem.Size = new Size(224, 26);
+            toggleToolStripMenuItem.Size = new Size(207, 26);
             toggleToolStripMenuItem.Text = "Toggle Notes List";
             toggleToolStripMenuItem.Click += toggleToolStripMenuItem_Click;
             // 
@@ -201,6 +209,7 @@
             dataGridViewNotes.Size = new Size(640, 308);
             dataGridViewNotes.TabIndex = 6;
             dataGridViewNotes.Visible = false;
+            dataGridViewNotes.CellContentClick += dataGridViewNotes_CellContentClick;
             // 
             // panel1
             // 
@@ -212,15 +221,6 @@
             panel1.Size = new Size(640, 34);
             panel1.TabIndex = 8;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(23, 1);
-            label1.Name = "label1";
-            label1.Size = new Size(50, 20);
-            label1.TabIndex = 0;
-            label1.Text = "label1";
-            // 
             // button1
             // 
             button1.Location = new Point(521, 3);
@@ -231,10 +231,20 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(23, 1);
+            label1.Name = "label1";
+            label1.Size = new Size(50, 20);
+            label1.TabIndex = 0;
+            label1.Text = "label1";
+            // 
             // MDIParentForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Black;
             ClientSize = new Size(640, 337);
             Controls.Add(panel1);
             Controls.Add(dataGridViewNotes);
@@ -244,7 +254,6 @@
             Margin = new Padding(2);
             Name = "MDIParentForm";
             Text = "MDIParentForm";
-            this.BackColor = System.Drawing.Color.Black;
             Load += MDIParentForm_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
@@ -259,11 +268,12 @@
 
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem logoutToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripMenuItem NewFileToolItem;
         private ToolStripMenuItem OpenFileToolItem;
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem SaveFileToolItem;
-        private ToolStripMenuItem ExitFileToolItem;
         private ToolStripMenuItem CutTextToolItem;
         private ToolStripMenuItem CopyTextToolItem;
         private ToolStripMenuItem PasteTextToolItem;

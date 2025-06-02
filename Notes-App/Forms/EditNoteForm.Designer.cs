@@ -116,7 +116,7 @@ namespace Digital_Notes_Manager.Forms
             // label3
             // 
             label3.AutoSize = true;
-            label3.BackColor = Color.FromArgb(0, 0, 64);
+            label3.BackColor = Color.DarkCyan;
             label3.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.ForeColor = SystemColors.ButtonHighlight;
             label3.Location = new Point(239, 165);
@@ -164,7 +164,7 @@ namespace Digital_Notes_Manager.Forms
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(0, 0, 64);
+            BackColor = Color.DarkCyan;
             ClientSize = new Size(914, 600);
             Controls.Add(button1);
             Controls.Add(label2);

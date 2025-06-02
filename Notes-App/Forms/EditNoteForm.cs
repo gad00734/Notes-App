@@ -2,6 +2,7 @@
 using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Digital_Notes_Manager.Forms
 {
@@ -12,17 +13,18 @@ namespace Digital_Notes_Manager.Forms
         private string _originalCategory;
         private DateTime? _originalReminderDate;
         private int _id;
-      
+        private readonly IServiceProvider _serviceProvider;
 
-        public EditNoteForm(string title, string content, string category, DateTime? reminderDate)
+        public EditNoteForm(string title, string content, string category, DateTime? reminderDate, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _originalTitle = title;
             _originalContent = content;
             _originalCategory = category;
             _originalReminderDate = reminderDate;
+            _serviceProvider = serviceProvider;
 
-            LoadCategories(); // 
+            LoadCategories();
 
             txtTitle.Text = title;
             txtContent.Text = content;
@@ -86,20 +88,16 @@ namespace Digital_Notes_Manager.Forms
 
         private void EditNoteForm_Load(object sender, EventArgs e)
         {
-
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-           
             using (var context = new AppDbContext())
             {
                 var note = context.Notes.FirstOrDefault(n => n.Title == _originalTitle && n.Content == _originalContent);
                 _id = note.UserID;
-
-
             }
-            MDIParentForm form = new MDIParentForm(_id);
+            MDIParentForm form = new MDIParentForm(_id, _serviceProvider);
             form.ShowDialog();
             this.Hide();
         }

@@ -18,7 +18,7 @@ namespace FR_Project.Presentation
 {
     public partial class LogIn : Form
     {
-        AuthServices _authServices;
+        private readonly AuthServices _authServices;
         private readonly IServiceProvider _serviceProvider;
 
         public LogIn(AuthServices authServices, IServiceProvider serviceProvider)
@@ -26,51 +26,64 @@ namespace FR_Project.Presentation
             InitializeComponent();
             _authServices = authServices;
             _serviceProvider = serviceProvider;
+            this.KeyPreview = true;
+
+            // Add KeyDown event handlers to textboxes
+            txtUserName.KeyDown += new KeyEventHandler(txtUserName_KeyDown);
+            txtPassword.KeyDown += new KeyEventHandler(txtPassword_KeyDown);
         }
 
         private void SignUpbt_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtUserName.Text) || string.IsNullOrWhiteSpace(txtPassword.Text))
+            {
+                MessageBox.Show("Please enter both username and password.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
                 _authServices.Login(txtUserName.Text, txtPassword.Text);
-                DialogResult result = MessageBox.Show("LOGIN SUCCESS ^^ ");
-
+                
+                // Store user session
                 SessionManager.UserName = txtUserName.Text;
                 SessionManager.SetPassword(txtPassword.Text);
 
-                if (result == DialogResult.OK)
+                using (var context = new AppDbContext())
                 {
-                    using (var context = new AppDbContext())
+                    var user = context.Users.FirstOrDefault(u => u.Username == txtUserName.Text);
+                    if (user != null)
                     {
-                        var user = context.Users.FirstOrDefault(u => u.Username == txtUserName.Text);
-                        if (user != null)
-                        {
-                            var mdiParent = new MDIParentForm(user.UserId); // إنشاء MDIParentForm
-                            NotesListForm notesListForm = new NotesListForm(mdiParent); // تمرير mdiParent إلى NotesListForm
-                            CreateNoteForm createNoteForm = new CreateNoteForm(user.UserId, notesListForm, mdiParent); // تمرير mdiParent إلى CreateNoteForm
-                            mdiParent.Show();
-                            this.Hide();
-                        }
-                        else
-                        {
-                            MessageBox.Show("User not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        var mdiParent = new MDIParentForm(user.UserId, _serviceProvider);
+                        NotesListForm notesListForm = new NotesListForm(mdiParent, _serviceProvider);
+                        CreateNoteForm createNoteForm = new CreateNoteForm(user.UserId, notesListForm, mdiParent, _serviceProvider);
+                        mdiParent.Show();
+                        this.Hide();
+                    }
+                    else
+                    {
+                        MessageBox.Show("User not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
             catch (InvalidUserNotExists ex)
             {
-                DialogResult result = MessageBox.Show(
-                    $"Error: {ex?.Message} Do You Want Create Account?",
+                var result = MessageBox.Show(
+                    $"User not found. Would you like to create an account?",
                     "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
 
-                if (result == DialogResult.OK)
+                if (result == DialogResult.Yes)
                 {
-                    _serviceProvider.GetRequiredService<SignUp>().Show();
+                    var signUpForm = _serviceProvider.GetRequiredService<SignUp>();
+                    signUpForm.Show();
                     this.Hide();
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred during login. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -91,10 +104,47 @@ namespace FR_Project.Presentation
             SetRoundedButton(btnLogin, 26);
         }
 
-        private void dontHaveAnAccountBTN(object sender, EventArgs e)
+        private void dontHaveAnAccountBTN_Click(object sender, EventArgs e)
         {
-            _serviceProvider.GetRequiredService<SignUp>().Show();
+            var signUpForm = _serviceProvider.GetRequiredService<SignUp>();
+            signUpForm.Show();
             this.Hide();
+        }
+
+        // Add KeyDown event handler
+        private void LogIn_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Keep Escape key handling on the form
+            if (e.KeyCode == Keys.Escape)
+            {
+                // Close the form
+                this.Close();
+                e.Handled = true; // Mark the event as handled
+            }
+        }
+
+        // KeyDown handler for txtUserName
+        private void txtUserName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // Trigger the login button click event
+                btnLogin.PerformClick();
+                e.Handled = true; // Mark the event as handled
+                e.SuppressKeyPress = true; // Suppress the default key press
+            }
+        }
+
+        // KeyDown handler for txtPassword
+        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // Trigger the login button click event
+                btnLogin.PerformClick();
+                e.Handled = true; // Mark the event as handled
+                e.SuppressKeyPress = true; // Suppress the default key press
+            }
         }
     }
 }
